@@ -25,5 +25,4 @@ public class UserServiceImp implements UserService {
    public List<User> listUsers() {
       return userDao.listUsers();
    }
-
 }
