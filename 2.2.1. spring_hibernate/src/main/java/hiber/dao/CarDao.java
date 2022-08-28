@@ -4,7 +4,7 @@ import hiber.model.Car;
 import hiber.model.User;
 
 public interface CarDao {
-    void add(Car car, User user);
+    void add(Car car);
 
     User getOwner(String model, int series);
 }

@@ -5,7 +5,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "cars")
 public class Car {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,9 +21,10 @@ public class Car {
 
     public Car() {}
 
-    public Car(String model, int series) {
+    public Car(String model, int series, User user) {
         this.model = model;
         this.series = series;
+        this.user = user;
     }
 
     public String getModel() { return model; }

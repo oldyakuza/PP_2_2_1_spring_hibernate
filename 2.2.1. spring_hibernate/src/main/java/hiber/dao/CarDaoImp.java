@@ -3,27 +3,41 @@ package hiber.dao;
 import hiber.model.Car;
 import hiber.model.User;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 
 @Repository
 public class CarDaoImp implements CarDao {
-    @Autowired
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
+
+    CarDaoImp(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
-    public void add(Car car, User user) {
-        car.setUser(user);
+    public void add(Car car) {
         sessionFactory.getCurrentSession().save(car);
     }
     @Override
     public User getOwner(String model, int series) {
-        String hql = "select u from Car  c, User  u where  c.model = :model and c.series = :series and u.id = c.id";
-        TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("model", model);
-        query.setParameter("series", series);
-        return query.getSingleResult();
+        CriteriaBuilder cBuilder = sessionFactory.getCriteriaBuilder();
+
+        CriteriaQuery<User> userCriteria = cBuilder.createQuery(User.class);
+        Root<User> userRoot = userCriteria.from(User.class);
+
+        Subquery<Car> carSubQuery = userCriteria.subquery(Car.class);
+        Root<Car> carRoot = carSubQuery.from(Car.class);
+
+        Predicate modelPred = cBuilder.equal(carRoot.get("model"), model);
+        Predicate seriesPred = cBuilder.equal(carRoot.get("series"), series);
+        Predicate idPred = cBuilder.equal(carRoot.get("id"), userRoot.get("id"));
+
+        carSubQuery.select(carRoot).where(cBuilder.and(modelPred, seriesPred, idPred));
+        userCriteria.select(userRoot).where(cBuilder.exists(carSubQuery));
+        TypedQuery<User> typedQuery = sessionFactory.openSession().createQuery(userCriteria);
+
+        return typedQuery.getSingleResult();
     }
 }
