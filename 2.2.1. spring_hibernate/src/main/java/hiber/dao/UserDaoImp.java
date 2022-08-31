@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public class UserDaoImp implements UserDao {
-  // @Autowired
    private final SessionFactory sessionFactory;
 
    UserDaoImp(SessionFactory sessionFactory) {

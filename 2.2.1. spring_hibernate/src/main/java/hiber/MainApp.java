@@ -23,13 +23,7 @@ public class MainApp {
       userService.add(new User("Alina", "Demidova", "user4@mail.ru"));
 
       List<User> users = userService.listUsers();
-      for (User user : users) {
-         System.out.println("Id = "+user.getId());
-         System.out.println("First Name = "+user.getFirstName());
-         System.out.println("Last Name = "+user.getLastName());
-         System.out.println("Email = "+user.getEmail());
-         System.out.println();
-      }
+      System.out.println(users);
 
       carService.add(new Car("Opel", 404, users.get(2)));
       carService.add(new Car("Toyota", 505, users.get(0)));
@@ -37,9 +31,6 @@ public class MainApp {
       carService.add(new Car("Ford", 202, users.get(3)));
 
       System.out.println("=======RESULT=======");
-      System.out.println(carService.getOwner("Opel", 404));
-      System.out.println(carService.getOwner("Toyota", 505));
-      System.out.println(carService.getOwner("Ford", 202));
       System.out.println(carService.getOwner("Lada", 303));
       System.out.println("========RESULT======");
 
